@@ -33,7 +33,7 @@ void setup() {
 
 void loop() {
   watchMillis();
-  updateIndicatorPins;
+  updateIndicatorPins();
   monitorTimeout();
 }
 
