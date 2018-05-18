@@ -6,6 +6,7 @@ unsigned long sensorCount = 0;
 unsigned long rfidCount = 0;
 unsigned long totalRfidCount = 0; 
 unsigned long totalSensorCount = 0;
+boolean hasEvent = true;
 
 #define SENSORPIN  2
 #define GREEN 3
@@ -41,6 +42,7 @@ void onPinInterrupt(){
   lastEventMilli = timeMilli;
   sensorCount++;
   totalSensorCount++;
+  hasEvent=true;
 }
 
 void onRFIDEvent(){ 
@@ -48,6 +50,7 @@ void onRFIDEvent(){
   rfidCount++;
   totalRfidCount++;
   lastToneStart=timeMilli;
+  hasEvent = true;
 }
 
 void serialEvent(){
@@ -90,12 +93,15 @@ void monitorTimeout(){
       sensorCount=0;
       rfidCount=0;
       // output a bit of json with the totals 
-      Serial.write( "{\"RFIDEvents\":" );
-      Serial.write( totalRfidCount );
-      Serial.write(",\"SensorEvent\":");
-      Serial.write( totalSensorCount);
-      Serial.write( "}\n" );
-      Serial.flush();
+      if( hasEvent ){
+        Serial.print( "{\"RFIDEvents\":" );
+        Serial.print (  totalRfidCount );
+        Serial.print(",\"SensorEvent\":");
+        Serial.print( totalSensorCount );
+        Serial.print( "}\n" );
+        Serial.flush();
+        hasEvent = false;
+      }
    }
 }
 
