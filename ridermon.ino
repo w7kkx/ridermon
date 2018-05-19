@@ -6,17 +6,23 @@ unsigned long sensorCount = 0;
 unsigned long rfidCount = 0;
 unsigned long totalRfidCount = 0; 
 unsigned long totalSensorCount = 0;
+unsigned long blinkMilli = 0;
 boolean hasEvent = true;
 
+
+
 #define SENSORPIN  2
-#define GREEN 3
-#define RED 4 
-#define YELLOW 5
-#define TONE 6
+#define GREEN 12
+#define RED 11
+#define YELLOW 10
+#define TONE 9
+
+#define ONBOARD 13
 
 const unsigned long timeoutMillis = 3000;
-
 const unsigned long toneDurationMillis = 250;
+
+const unsigned long blinkDurationMillis = 250;
 
 void setup() {
   // setup the Interrupt listener for the beam break 
@@ -68,23 +74,31 @@ void watchMillis(){
 
 void updateIndicatorPins(){ 
     if (rfidCount < sensorCount ) { 
-      digitalWrite( GREEN, LOW );
-      digitalWrite( RED, HIGH );
-      digitalWrite( YELLOW, LOW );
-    } else if (rfidCount > sensorCount ) { 
-      digitalWrite( GREEN, LOW );
-      digitalWrite( RED, LOW );
-      digitalWrite( YELLOW, HIGH );
-    } else { 
       digitalWrite( GREEN, HIGH );
       digitalWrite( RED, LOW );
+      digitalWrite( YELLOW, HIGH );
+    } else if (rfidCount > sensorCount ) { 
+      digitalWrite( GREEN, HIGH );
+      digitalWrite( RED, HIGH );
       digitalWrite( YELLOW, LOW );
+    } else { 
+      digitalWrite( GREEN, LOW );
+      digitalWrite( RED, HIGH );
+      digitalWrite( YELLOW, HIGH );
     }
 
     if( timeMilli- lastToneStart > toneDurationMillis ) { 
-       digitalWrite( TONE, LOW );
+       digitalWrite( TONE, HIGH );
     }else{
-      digitalWrite( TONE, HIGH );
+      digitalWrite( TONE, LOW );
+    }
+
+    if( (timeMilli - blinkMilli) > blinkDurationMillis ){ 
+      digitalWrite( ONBOARD, HIGH );
+      blinkMilli=timeMilli;
+    }
+    else{
+      digitalWrite( ONBOARD, LOW );
     }
 }
 
