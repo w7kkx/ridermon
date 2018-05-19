@@ -20,7 +20,7 @@ boolean hasEvent = true;
 #define ONBOARD 13
 
 const unsigned long timeoutMillis = 3000;
-const unsigned long toneDurationMillis = 250;
+const unsigned long toneDurationMillis = 50;
 
 const unsigned long blinkDurationMillis = 250;
 
@@ -62,9 +62,9 @@ void onRFIDEvent(){
 void serialEvent(){
   while (Serial.available()) {
     char inChar = (char)Serial.read();
-    if (inChar == '\n') {
+   // if (inChar == '\r') {
       onRFIDEvent();
-    }
+   // }
   }
 }
 
